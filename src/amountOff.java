@@ -9,7 +9,9 @@ public class amountOff extends AbstractCoupons implements Coupons {
     this.aOffValue = aOffValue;
     this.item = item;
     this.unitPrice = unitPrice;
-    this.quantity = quantity;
+    this.quantity = quantity; if (quantity <= 0 || unitPrice <= 0 || item == "" || item == null || aOffValue <= 0) {
+      throw new IllegalArgumentException("Invalid Argument!");
+    }
   }
 
   @Override
@@ -18,13 +20,14 @@ public class amountOff extends AbstractCoupons implements Coupons {
     return discountPrice;
   }
 
-  public amountOff stackCoupons(amountOff cou) {
+  public amountOff stackCoupons(Coupons cou) {
     if (cou instanceof amountOff) {
-      if (this.item == cou.item && this.unitPrice == cou.unitPrice && this.quantity == cou.quantity) {
-        cou.aOffValue = this.aOffValue + cou.aOffValue;
-        float newDisc = finalPriceHelper(quantity, unitPrice, item, this.aOffValue + cou.aOffValue);
+      amountOff that = (amountOff) cou;
+      if (this.item == that.item && this.unitPrice == that.unitPrice && this.quantity == that.quantity) {
+        that.aOffValue = this.aOffValue + that.aOffValue;
+        float newDisc = finalPriceHelper(quantity, unitPrice, item, this.aOffValue + that.aOffValue);
         //System.out.println("/"+newDisc);
-        return cou;
+        return that;
       } else {
         throw new IllegalArgumentException("Not Stackable!");
       }
