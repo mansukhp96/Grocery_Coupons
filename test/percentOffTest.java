@@ -8,13 +8,13 @@ public class percentOffTest {
 
   @Test
   public void testPercentOff() {
-    perc = new percentOff(10,2, "bread", 2);
-    assertEquals("1", perc.finalPrice());
+    perc = new percentOff(10, 1, "Milk", 2);
+    assertEquals(9.6f, perc.stackCoupons(new percentOff(10, 1, "yo", 2)).finalPrice(), 0);
   }
 
   @Test
   public void testPercentOffDesc() {
-    perc = new percentOff(5, 2, "eggs", 5);
-    assertEquals("5.0% off on eggs", perc.getDescription());
+    perc = new percentOff(10, 1, "Eggs", 2);
+    assertEquals("4.0% off on Eggs", perc.stackCoupons(new percentOff(10, 1, "Eggs", 2)).getDescription());
   }
 }

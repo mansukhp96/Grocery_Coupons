@@ -19,8 +19,8 @@ public class percentOff extends AbstractCoupons implements Coupons {
     if (cou instanceof percentOff) {
       if (this.item == cou.item && this.unitPrice == cou.unitPrice && this.quantity == cou.quantity) {
         cou.pOffValue = this.pOffValue + cou.pOffValue;
-        float newDisc = finalPriceHelper(quantity, unitPrice, item, cou.pOffValue);
-        System.out.println("/"+cou.pOffValue);
+        float newDisc = finalPriceHelper(quantity, unitPrice, item, this.pOffValue + cou.pOffValue);
+        //System.out.println("/"+newDisc);
         return cou;
       } else {
         throw new IllegalArgumentException("Not Stackable!");
@@ -39,7 +39,6 @@ public class percentOff extends AbstractCoupons implements Coupons {
   private float finalPriceHelper(int quantity, float unitPrice, String item, float pOffValue) {
     float totalPrice = unitPrice * quantity;
     float discountPrice = (totalPrice - (pOffValue / 100) * totalPrice);
-    //System.out.println(discountPrice);
     return discountPrice;
   }
 
@@ -52,21 +51,5 @@ public class percentOff extends AbstractCoupons implements Coupons {
   public String toString() {
     String str = pOffValue + "% off on " + item;
     return str;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj instanceof percentOff) {
-      percentOff that = (percentOff) obj;
-      return true;
-    }
-    return false;
-  }
-
-  public static void main(String[] args) {
-    percentOff n = new percentOff(10, 1, "yo", 2);
-    percentOff ne = new percentOff(10, 1, "yo", 2);
-    percentOff ne1 = new percentOff(10, 1, "yo", 2);
-    System.out.println(n.stackCoupons(ne).stackCoupons(ne1));
   }
 }
