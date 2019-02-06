@@ -1,28 +1,58 @@
-public class percentOff extends AbstractCoupons implements Coupons {
+public class PercentOff extends AbstractCoupons implements Coupons {
 
   private float pOffValue;
   private String item;
 
-  public percentOff(String item, float pOffValue) {
+  /**
+   * This constructor creates an object of this type.
+   *
+   * @param item      is the name of the item.
+   * @param pOffValue is the percentage off the coupon will be giving on the item.
+   * @throws IllegalArgumentException when the off percentage is zero or below 0 or item name is
+   *                                  null.
+   */
+
+  public PercentOff(String item, float pOffValue) throws IllegalArgumentException {
     this.pOffValue = pOffValue;
     this.item = item;
-    if (item == "" || item == null || pOffValue <= 0) {
-      throw new IllegalArgumentException("Invalid Argument!");
+    if (item == null || pOffValue <= 0) {
+      throw new IllegalArgumentException("Invalid Coupon offValue/item");
     }
   }
 
+  /**
+   * This method calculates the final price the customer needs to pay after discount.
+   *
+   * @param unitPrice is the price per unit quantity of an item.
+   * @param quantity  is the number of items to be bought.
+   * @return it returns the final price to be paid by the customer.
+   */
+
   @Override
-  public float finalPrice(float unitPrice, float quantity) {
-    float totalPrice = unitPrice * quantity;
-    float discountPrice = (totalPrice - (pOffValue / 100) * totalPrice);
-    return discountPrice;
+  public float finalPrice(float unitPrice, float quantity) throws IllegalArgumentException {
+    if (unitPrice <= 0 || quantity <= 0) {
+      throw new IllegalArgumentException("Invalid Initial price/quantity");
+    } else {
+      float totalPrice = unitPrice * quantity;
+      if ((totalPrice - (pOffValue / 100) * totalPrice) <= 0) {
+        throw new IllegalArgumentException("Discount cannot go below zero!");
+      }
+      return (totalPrice - (pOffValue / 100) * totalPrice);
+    }
   }
 
-  public percentOff stackCoupons(Coupons cou) {
-    if (cou instanceof percentOff) {
-      percentOff that = (percentOff) cou;
+  /**
+   * This method stacks coupons of this type and for same item.
+   *
+   * @param cou is the coupon to be stacked to the other coupon.
+   * @return a new coupon object that is of percent off type with the stacked discounts.
+   */
+
+  public PercentOff stackCoupons(Coupons cou) throws IllegalArgumentException {
+    if (cou instanceof PercentOff) {
+      PercentOff that = (PercentOff) cou;
       if (this.item == that.item) {
-        percentOff per = new percentOff(item, this.pOffValue + that.pOffValue);
+        PercentOff per = new PercentOff(item, this.pOffValue + that.pOffValue);
         return per;
       } else {
         throw new IllegalArgumentException("Not Stackable!");
@@ -32,6 +62,13 @@ public class percentOff extends AbstractCoupons implements Coupons {
     }
   }
 
+  /**
+   * This method is used for getting the description of the coupon.
+   *
+   * @return the accumulated discount descritiopn of the coupon.
+   */
+
+
   @Override
   public String getDescription() {
     return super.getDescription();
@@ -40,11 +77,5 @@ public class percentOff extends AbstractCoupons implements Coupons {
   @Override
   public String toString() {
     return pOffValue + "% off on " + item;
-  }
-
-  public static void main(String[] args) {
-    percentOff n = new percentOff("eggs", 10);
-    percentOff n2 = new percentOff("eggs", 10);
-    System.out.println(n.stackCoupons(n2).finalPrice(2,2));
   }
 }
